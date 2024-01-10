@@ -4,9 +4,11 @@
   "license": "MIT",
   "scripts": {
     "build": "nx build",
-    "test": "nx test"
+    "pretest": "tsc --incremental -p ./tsconfig.spec.json",
+    "test": "playwright test -c ./dist/testgular/src"
   },
   "dependencies": {
+    "@lowgular/testgular": "^0.0.123",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
