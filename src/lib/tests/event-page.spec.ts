@@ -13,6 +13,8 @@ import { ANY_SIGN } from '../utils/test-config';
 import { TEST_CONFIG } from '../utils/test-config';
 import { ReviewsSection } from '../components/reviews-section';
 import { Paginator } from '../components/paginator';
+import { CastSection } from '../components/cast-section';
+import {ArtistSection} from '../components/artist-section';
 
 it('navigation without eventId', APP_CONFIG, async (app: App) => {
   const router = app.inject(Router);
@@ -73,4 +75,27 @@ it('reviews section', APP_CONFIG, async (app: App) => {
 
   await paginator.checkFirstPageScenario();
   await paginator.goToPage(3);
+});
+
+it('cast section', APP_CONFIG, async (app: App) => {
+  const router = app.inject(Router);
+  const el = app.inject(ElementLocator);
+
+  await router.navigate(
+    `/wydarzenia/${TEST_CONFIG.showSlug}?eventId=${TEST_CONFIG.eventId}`
+  );
+
+  const castSection = el.locateChild(CastSection, cssSelector('section.cast'));
+
+  await castSection.checkHeaderContent();
+  await castSection.checkFormatImagesUrls();
+
+  const selectedName = await castSection.getSelectedArtistName(1);
+
+  await castSection.selectArtisByIndex(1);
+  await router.expectAndWaitForUrl(UrlMatcher.startsWith('artysta/', ''));
+  await app.waitForTimeout(5000);
+  const artistSection = el.locateChild(ArtistSection, cssSelector('article'));
+  await artistSection.expectContentContainsName(selectedName);
+
 });
