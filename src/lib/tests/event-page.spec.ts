@@ -14,7 +14,7 @@ import { TEST_CONFIG } from '../utils/test-config';
 import { ReviewsSection } from '../components/reviews-section';
 import { Paginator } from '../components/paginator';
 import { CastSection } from '../components/cast-section';
-import {ArtistSection} from '../components/artist-section';
+import {ArtistPageMainSection} from '../components/artist-page-main-section';
 
 it('navigation without eventId', APP_CONFIG, async (app: App) => {
   const router = app.inject(Router);
@@ -95,7 +95,7 @@ it('cast section', APP_CONFIG, async (app: App) => {
   await castSection.selectArtisByIndex(1);
   await router.expectAndWaitForUrl(UrlMatcher.startsWith('artysta/', ''));
   await app.waitForTimeout(5000);
-  const artistSection = el.locateChild(ArtistSection, cssSelector('article'));
+  const artistSection = el.locateChild(ArtistPageMainSection, cssSelector('article'));
   await artistSection.expectContentContainsName(selectedName);
 
 });
