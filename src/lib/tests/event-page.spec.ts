@@ -3,7 +3,6 @@ import {
   ContainerElement,
   ElementLocator,
   Router,
-  StringMatcher,
   TextElement,
   UrlMatcher,
   cssSelector,
@@ -12,8 +11,8 @@ import {
 import { APP_CONFIG } from '../utils/app-config';
 import { ANY_SIGN } from '../utils/test-config';
 import { TEST_CONFIG } from '../utils/test-config';
-import { ClickableImageRow} from '../components/clickable-image-row'
-import {SingleReview} from '../components/single-review'
+import {SingleReview} from '../components/single-review';
+import {ReviewsSection} from '../components/reviews-section';
 
 it('navigation without eventId', APP_CONFIG, async (app: App) => {
   const router = app.inject(Router);
@@ -60,19 +59,13 @@ it('reviews section', APP_CONFIG, async(app: App) => {
     `/wydarzenia/${TEST_CONFIG.showSlug}?eventId=${TEST_CONFIG.eventId}`
   );
 
-const reviewsSection = el.locateChild(ContainerElement, cssSelector('section.reviews'));
-const reviewsHeader = await reviewsSection.elementLocator.locateChild(TextElement, cssSelector('h3'));
-await reviewsHeader.expectContent(new RegExp('opinie naszych widzów', 'i'))
-const headerContainer = await reviewsSection.elementLocator.locateChild(ContainerElement, cssSelector('.reviews-header'));
-const reviewsCounter = await headerContainer.elementLocator.locateChild(TextElement, cssSelector('span'));
-await reviewsCounter.expectContent(new RegExp(/\([1-9]\d*\)/));
+const reviewsSection = el.locateChild(ReviewsSection, cssSelector('section.reviews'));
 
-const reviewList = await reviewsSection.elementLocator.locateList(SingleReview, cssSelector('km-review-detail'));
-await reviewList.expectToHaveLength(5);
-await reviewList.forEachChild(singleReview => singleReview.expectData())
+await reviewsSection.checkHeaderContent();
+await reviewsSection.checkCounterFormat();
+await reviewsSection.checkLength();
+await reviewsSection.checkDataFormat();
 
 });
-
-
 
 //@todo paginator
