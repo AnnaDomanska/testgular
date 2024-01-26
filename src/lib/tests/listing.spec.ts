@@ -19,7 +19,7 @@ it('headerCitySelector', APP_CONFIG, async (app: App) => {
   const router = app.inject(Router);
   const el = app.inject(ElementLocator);
 
-  await router.navigateAndWait(`/${removePolishCharacters(TEST_CONFIG.city)}`);
+  await router.navigateAndWait(`/${removePolishCharacters(TEST_CONFIG.default.city)}`);
   const header = el.locateChild(ContainerElement, cssSelector('km-header'));
   const headerCitySelector = await header.elementLocator.locateChild(
     CitySelector,
@@ -27,7 +27,7 @@ it('headerCitySelector', APP_CONFIG, async (app: App) => {
   );
 
   await headerCitySelector.expectButtonContent(
-    StringMatcher.titleCase(TEST_CONFIG.city)
+    StringMatcher.titleCase(TEST_CONFIG.default.city)
   );
   await headerCitySelector.open();
   await headerCitySelector.checkIfOpen();
@@ -43,7 +43,7 @@ it('listingCardBox', APP_CONFIG, async (app: App) => {
   const router = app.inject(Router);
   const el = app.inject(ElementLocator);
 
-  await router.navigateAndWait(`/${removePolishCharacters(TEST_CONFIG.city)}`);
+  await router.navigateAndWait(`/${removePolishCharacters(TEST_CONFIG.default.city)}`);
   const eventCardBoxes = await el.locateList(
     EventCardBox,
     cssSelector('.card-box')
@@ -61,7 +61,7 @@ it('newsletterForm', APP_CONFIG, async (app: App) => {
   const router = app.inject(Router);
   const el = app.inject(ElementLocator);
 
-  await router.navigateAndWait(`/${removePolishCharacters(TEST_CONFIG.city)}`);
+  await router.navigateAndWait(`/${removePolishCharacters(TEST_CONFIG.default.city)}`);
   const newsletterForm = await el.locateChild(
     NewsletterForm,
     cssSelector('.newsletter-section-item.newsletter-form')
@@ -87,7 +87,7 @@ it('artist-section', APP_CONFIG, async (app: App) => {
   const router = app.inject(Router);
   const el = app.inject(ElementLocator);
 
-  await router.navigateAndWait(`/${removePolishCharacters(TEST_CONFIG.city)}`);
+  await router.navigateAndWait(`/${removePolishCharacters(TEST_CONFIG.default.city)}`);
   const topArtistBoxes = await el.locateList(
     TopArtistBox,
     cssSelector('km-top-artist-box')
@@ -106,7 +106,7 @@ it('event-navigation', APP_CONFIG, async (app: App) => {
   const router = app.inject(Router);
   const el = app.inject(ElementLocator);
 
-  await router.navigateAndWait(`/${removePolishCharacters(TEST_CONFIG.city)}`);
+  await router.navigateAndWait(`/${removePolishCharacters(TEST_CONFIG.default.city)}`);
   const eventCardBoxes = await el.locateList(
     EventCardBox,
     cssSelector('.card-box')

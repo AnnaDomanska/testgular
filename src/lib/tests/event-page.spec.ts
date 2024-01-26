@@ -1,5 +1,6 @@
 import {
   App,
+  ButtonElement,
   ContainerElement,
   ElementLocator,
   Router,
@@ -15,15 +16,16 @@ import { ReviewsSection } from '../components/reviews-section';
 import { Paginator } from '../components/paginator';
 import { CastSection } from '../components/cast-section';
 import {ArtistPageMainSection} from '../components/artist-page-main-section';
+import {ReminderDialog} from '../components/reminder-dialog';
 
 it('navigation without eventId', APP_CONFIG, async (app: App) => {
   const router = app.inject(Router);
   const el = app.inject(ElementLocator);
 
-  await router.navigate(`/wydarzenia/${TEST_CONFIG.showSlug}`);
+  await router.navigate(`/wydarzenia/${TEST_CONFIG.default.showSlug}`);
   await router.expectAndWaitForFullUrl(
     UrlMatcher.startsWith(
-      `${APP_CONFIG.appUrl}/wydarzenia/${TEST_CONFIG.showSlug}`,
+      `${APP_CONFIG.appUrl}/wydarzenia/${TEST_CONFIG.default.showSlug}`,
       ''
     )
   );
@@ -38,12 +40,12 @@ it('navigation with eventId', APP_CONFIG, async (app: App) => {
   const el = app.inject(ElementLocator);
 
   await router.navigate(
-    `/wydarzenia/${TEST_CONFIG.showSlug}?eventId=${TEST_CONFIG.eventId}`
+    `/wydarzenia/${TEST_CONFIG.default.showSlug}?eventId=${TEST_CONFIG.default.eventId}`
   );
   await router.expectAndWaitForFullUrl(
     UrlMatcher.startsWith(
-      `${APP_CONFIG.appUrl}/wydarzenia/${TEST_CONFIG.showSlug}`,
-      `?eventId=${TEST_CONFIG.eventId}`
+      `${APP_CONFIG.appUrl}/wydarzenia/${TEST_CONFIG.default.showSlug}`,
+      `?eventId=${TEST_CONFIG.default.eventId}`
     )
   );
   await app.waitForTimeout(5000);
@@ -58,7 +60,7 @@ it('reviews section', APP_CONFIG, async (app: App) => {
   const el = app.inject(ElementLocator);
 
   await router.navigate(
-    `/wydarzenia/${TEST_CONFIG.showSlug}?eventId=${TEST_CONFIG.eventId}`
+    `/wydarzenia/${TEST_CONFIG.default.showSlug}?eventId=${TEST_CONFIG.default.eventId}`
   );
 
   const reviewsSection = el.locateChild(
@@ -82,7 +84,7 @@ it('cast section', APP_CONFIG, async (app: App) => {
   const el = app.inject(ElementLocator);
 
   await router.navigate(
-    `/wydarzenia/${TEST_CONFIG.showSlug}?eventId=${TEST_CONFIG.eventId}`
+    `/wydarzenia/${TEST_CONFIG.default.showSlug}?eventId=${TEST_CONFIG.default.eventId}`
   );
 
   const castSection = el.locateChild(CastSection, cssSelector('section.cast'));
@@ -99,3 +101,25 @@ it('cast section', APP_CONFIG, async (app: App) => {
   await artistSection.expectContentContainsName(selectedName);
 
 });
+
+it('reminder', APP_CONFIG, async (app:App) => {
+  const router = app.inject(Router);
+  const el = app.inject(ElementLocator);
+
+  await router.navigate(
+    `/wydarzenia/${TEST_CONFIG.forReminder.showSlug}?eventId=${TEST_CONFIG.forReminder.eventId}`
+  );
+
+  const reminderButton = await el.locateChild(ContainerElement, cssSelector('.reminder-button')).elementLocator.locateChild(ButtonElement, cssSelector('.kfb-button'));
+  const reminderDialog = await el.locateChild(ReminderDialog, cssSelector('mat-dialog-container'));
+
+  await reminderButton.click();
+  await reminderDialog.checkIfOpen();
+  await reminderDialog.setEmail('anna@wp.pl');
+  await reminderDialog.checkConsent();
+  await reminderDialog.submitForm();
+  await reminderDialog.checkIfValid();
+  await reminderDialog.close();
+  await reminderDialog.checkIfClose();
+
+})
