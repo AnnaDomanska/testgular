@@ -11,8 +11,8 @@ import {
 import { APP_CONFIG } from '../utils/app-config';
 import { ANY_SIGN } from '../utils/test-config';
 import { TEST_CONFIG } from '../utils/test-config';
-import {SingleReview} from '../components/single-review';
-import {ReviewsSection} from '../components/reviews-section';
+import { ReviewsSection } from '../components/reviews-section';
+import { Paginator } from '../components/paginator';
 
 it('navigation without eventId', APP_CONFIG, async (app: App) => {
   const router = app.inject(Router);
@@ -51,7 +51,7 @@ it('navigation with eventId', APP_CONFIG, async (app: App) => {
   await header.expectContent(ANY_SIGN);
 });
 
-it('reviews section', APP_CONFIG, async(app: App) => {
+it('reviews section', APP_CONFIG, async (app: App) => {
   const router = app.inject(Router);
   const el = app.inject(ElementLocator);
 
@@ -59,13 +59,18 @@ it('reviews section', APP_CONFIG, async(app: App) => {
     `/wydarzenia/${TEST_CONFIG.showSlug}?eventId=${TEST_CONFIG.eventId}`
   );
 
-const reviewsSection = el.locateChild(ReviewsSection, cssSelector('section.reviews'));
+  const reviewsSection = el.locateChild(
+    ReviewsSection,
+    cssSelector('section.reviews')
+  );
 
-await reviewsSection.checkHeaderContent();
-await reviewsSection.checkCounterFormat();
-await reviewsSection.checkLength();
-await reviewsSection.checkDataFormat();
+  await reviewsSection.checkHeaderContent();
+  await reviewsSection.checkCounterFormat();
+  await reviewsSection.checkLength();
+  await reviewsSection.checkDataFormat();
 
+  const paginator = el.locateChild(Paginator, cssSelector('.pagination'));
+
+  await paginator.checkFirstPageScenario();
+  await paginator.goToPage(3);
 });
-
-//@todo paginator
